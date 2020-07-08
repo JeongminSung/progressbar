@@ -1,5 +1,5 @@
 import { Animated, StyleProp, ViewStyle } from "react-native";
-import React, { ReactElement, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 
 import styled from "styled-components/native";
 
@@ -9,7 +9,6 @@ export interface Props {
   height?: number | string;
   color?: string;
   animation?: boolean;
-  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -32,7 +31,8 @@ const handleVariant = (
   return undefined;
 };
 
-const Skeleton = ({
+const Skeleton: FC<Props> = ({
+  //function component
   variant,
   width,
   height,
@@ -40,7 +40,7 @@ const Skeleton = ({
   animation,
   children,
   style,
-}: Props): ReactElement => {
+}) => {
   const opacity = new Animated.Value(0.3);
 
   useEffect((): void => {
@@ -86,8 +86,13 @@ const Skeleton = ({
         { height },
         handleVariant(variant),
         animation ? { opacity } : undefined,
+        //children 속성 뭔가 이상함.. width, height 받지 않는 방법 생각해보기
+        //reactNode가 뭘지 생각하기
         children
-          ? { width: children.width, height: children.height }
+          ? {
+              width: (children as React.ReactChildren).width,
+              height: children.height,
+            }
           : undefined,
         { backgroundColor: color },
         style,
